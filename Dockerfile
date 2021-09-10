@@ -1,8 +1,13 @@
-FROM golang:alpine as builder
-RUN apk update && apk add git && apk add ca-certificates
-RUN GOOS=linux GOARCH=arm GOARM=6 go get -u github.com/prometheus/node_exporter
+FROM alpine:3.14.2 AS download
+ARG PROMETHEUS_TAG
+
+WORKDIR /tmp
+ENV PROMETHEUS_TAG=${PROMETHEUS_TAG}
+ADD downloader.sh /tmp/downloader.sh
+RUN ["/bin/sh", "-c", "/tmp/downloader.sh"]
 
 FROM scratch
-COPY --from=builder /go/bin/linux_arm/node_exporter /root/
+
+COPY --from=download /tmp/node_exporter /root/node_exporter
 EXPOSE 9100
-ENTRYPOINT ["/root/node_exporter"]
+CMD ["/root/node_exporter"]

@@ -79,6 +79,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           file: Dockerfile
+          build-args: PROMETHEUS_TAG=${{ env.EXPORTER_VERSION }}
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME || 'nobody' }}/${{ env.IMAGE_NAME }}:latest
             ${{ secrets.DOCKERHUB_USERNAME || 'nobody' }}/${{ env.IMAGE_NAME }}:${{ env.EXPORTER_VERSION }}
