@@ -38,25 +38,10 @@ jobs:
           echo "EXPORTER_VERSION=${EXPORTER_VERSION}" >> $GITHUB_ENV
           git checkout ${EXPORTER_VERSION}
 
-      - name: Check whether latest release needs building
-        if: ${{ env.PUSH_IMAGE == 'true' }}
-        run: |
-          # Check whether there already is a Docker image for the current tag
-          BUILT_TAGS=$(curl -s https://registry.hub.docker.com/v1/repositories/${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}/tags | jq -r ".[].name") || SERVER_TAGS="none"
-          for tag in ${BUILT_TAGS[@]}; do
-            if [[ "$tag" == "${EXPORTER_VERSION}" ]]; then
-              echo "Release ${tag} has already been built."
-              echo "BUILD_RELEASE=false" >> $GITHUB_ENV
-              exit
-            fi
-          done
-
       - name: Docker Setup QEMU
-        if: ${{ env.BUILD_RELEASE == 'true' }}
         uses: docker/setup-qemu-action@v1
 
       - name: Docker Setup Buildx
-        if: ${{ env.BUILD_RELEASE == 'true' }}
         uses: docker/setup-buildx-action@v1
 
       - name: Login to DockerHub
@@ -75,7 +60,6 @@ jobs:
           password: ${{ secrets.GHCR_TOKEN }}
 
       - name: Build and push ${{ env.IMAGE_NAME }} Docker image
-        if: ${{ env.BUILD_RELEASE == 'true' }}
         uses: docker/build-push-action@v2
         with:
           file: Dockerfile
