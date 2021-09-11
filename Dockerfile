@@ -7,6 +7,7 @@ ADD downloader.sh /tmp/downloader.sh
 RUN ["/bin/sh", "-c", "/tmp/downloader.sh"]
 
 FROM alpine:3.14.2
-COPY --from=download /tmp/node_exporter /root/node_exporter
+COPY --from=download /tmp/node_exporter /bin/node_exporter
 EXPOSE 9100
-CMD ["/root/node_exporter"]
+USER nobody
+ENTRYPOINT ["/bin/node_exporter"]
