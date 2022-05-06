@@ -39,7 +39,7 @@ jobs:
           git checkout ${EXPORTER_VERSION}
 
       - name: Docker Setup QEMU
-        uses: docker/setup-qemu-action@v1
+        uses: docker/setup-qemu-action@v2
 
       - name: Docker Setup Buildx
         uses: docker/setup-buildx-action@v2
