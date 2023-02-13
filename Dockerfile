@@ -1,4 +1,4 @@
-FROM alpine:3.17.1 AS download
+FROM alpine:3.17.2 AS download
 ARG PROMETHEUS_TAG
 
 WORKDIR /tmp
